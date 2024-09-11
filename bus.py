@@ -7,7 +7,7 @@ import rich.table
 def menu():
     cond = True
     while cond == True:
-        print("Bus Investigation Application - v1")
+        print("\nBus Investigation Application - v1")
         print("What would you like to do?")
         userInput = input("Type 1 to input data, Type 2 to search the data, Type 3 to read and print the data statistics, Type e to exit: \n").lower()
         if userInput == "1":
@@ -79,12 +79,17 @@ def searchData():
                         console = rich.console.Console()
                         console.print(table)
                         print("Key: \nPositive Number means ahead of schedule by n minutes. \nNegative number means behind schedule by n minutes. \n0 means on time.\n")
-                        nolate = 0
+                        noLate = 0
+                        busLate = False
                         for week in weeks:
                             for day in days:
                                 number = int(data[f'{route}{week}{day}'])
                                 if number < 0:
+                                    if busLate == False:
+                                        busLate = True
+                                        print("BUSES THAT WHERE LATE:")
                                     noLate = noLate + 1
+                                    print(f"Bus Route {route} on Week {week} on Day {day} was late by {data[f'{route}{week}{day}'] * -1} minutes.")
                         print(f"Number of times bus route {route} was late: {noLate}\n")
                     elif route == "Q":
                         condition2 = False
@@ -94,7 +99,7 @@ def searchData():
                 condition2 = True
                 while condition2 == True:
                     week = int(input("What week are you looking at? (9 to exit) "))
-                    if week == weeks[0] or week == weeks[1] or week == weeks[2] or weeks == weeks[3]:
+                    if week == weeks[0] or week == weeks[1] or week == weeks[2] or week == weeks[3]:
                         print(f"Printing Bus Punctuality table for week {week}...\n")
                         table = rich.table.Table(title=f"Bus Punctuality for Week {week}")
                         table.add_column("Route")
@@ -106,10 +111,15 @@ def searchData():
                         console.print(table)
                         print("Key: \nPositive Number means ahead of schedule by n minutes. \nNegative number means behind schedule by n minutes. \n0 means on time.\n")
                         noLate = 0
+                        busLate = False
                         for bus in buses:
                             for day in days:
                                 if data[f'{bus}{week}{day}'] < 0:
+                                    if busLate == False:
+                                        busLate = True
+                                        print("BUSES THAT WHERE LATE:")
                                     noLate = noLate + 1
+                                    print(f"Bus Route {bus} on Week {week} on Day {day} was late by {data[f'{bus}{week}{day}'] * -1} minutes.")
                         print(f"Number of times bus was late in week {week}: {noLate}\n")
                     elif week == 9:
                         condition2 = False
@@ -131,10 +141,15 @@ def searchData():
                         console.print(table)
                         print("Key: \nPositive Number means ahead of schedule by n minutes. \nNegative number means behind schedule by n minutes. \n0 means on time.\n")
                         noLate = 0
+                        busLate = False
                         for bus in buses:
                             for week in weeks:
                                 if data[f'{bus}{week}{day.capitalize()}'] < 0:
+                                    if busLate == False:
+                                        busLate = True
+                                        print("BUSES THAT WHERE LATE:")
                                     noLate = noLate + 1
+                                    print(f"Bus Route {bus} on Week {week} on Day {day} was late by {data[f'{bus}{week}{day.capitalize()}'] * -1} minutes.")
                         print(f"Number of times bus was late on day {day} throughout all {len(weeks)} weeks: {noLate}\n")
                     elif day == "q":
                         condition2 = False
@@ -231,7 +246,7 @@ def batchInputData():
         while condition == True:
             batchUserInput = input(f"Input the data for the on time performance of the bus {bus} for days in format num1,num2,num3,...etc with them being in order of day from Monday1 - Sunday1, Monday2 - Sunday2, etc: \n")
             batchUserArray = batchUserInput.split(",")
-            if len(batchUserArray) == 20:
+            if verifyDataArray(batchUserArray) == True:
                 nd = 0
                 nw = 0
                 for x in batchUserArray:
@@ -251,6 +266,15 @@ def batchInputData():
             else:
                 print("INPUT A CORRECT SET OF DATA PLEASE")
     inputWriteToFile(data,"data.json")
+
+def verifyDataArray(array:dict):
+    if len(array) != 20:
+        return False
+    else:
+        for i in array:
+            if i.isdigit() != True:
+                return False
+        return True
 
 def inputWriteToFile(data: dict,file: str):
     file = open(file, "w")
