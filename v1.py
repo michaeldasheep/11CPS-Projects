@@ -79,10 +79,12 @@ def searchData():
                         console = rich.console.Console()
                         console.print(table)
                         print("Key: \nPositive Number means ahead of schedule by n minutes. \nNegative number means behind schedule by n minutes. \n0 means on time.\n")
-                        noLate,avgLate,avgLateofLate, statDictionary = statBuses(route, data)
-                        del avgLate
-                        del avgLateofLate
-                        del statDictionary
+                        nolate = 0
+                        for week in weeks:
+                            for day in days:
+                                number = int(data[f'{route}{week}{day}'])
+                                if number < 0:
+                                    noLate = noLate + 1
                         print(f"Number of times bus route {route} was late: {noLate}\n")
                     elif route == "Q":
                         condition2 = False
