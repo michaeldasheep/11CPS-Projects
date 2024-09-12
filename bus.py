@@ -8,8 +8,11 @@ def menu():
     cond = True
     while cond == True:
         print("\nBus Investigation Application - v1")
-        print("What would you like to do?")
-        userInput = int(input("Type 1 to input data, Type 2 to search the data, Type 3 to read and print the data statistics, Type 9 to exit: \n"))
+        print("- Type 1 to input data")
+        print("- Type 2 to search the data")
+        print("- Type 3 to read the data and print statistics")
+        print("- Type 9 to exit")
+        userInput = int(input("What would you like to do? "))
         if userInput == 1:
             inputData()
         elif userInput == 2:

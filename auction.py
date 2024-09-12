@@ -5,8 +5,12 @@ def menu():
     condition = True
     while condition == True:
         print("\nSilent Auction Application - v1")
-        print("What would you like to do?")
-        userInput = int(input("Type 1 to input auction details, Type 2 to display details of items, Type 3 to enter bids, Type 4 to compute/show bidding results, Type 9 to exit: \n"))
+        print("- Type 1 to input auction details")
+        print("- Type 2 to display details of items")
+        print("- Type 3 to enter bids/commence auction")
+        print("- Type 4 to compute auction results")
+        print("- Type 9 to exit")
+        userInput = int(input("What would you want to do? "))
         if userInput == 1:
             auctionDetailInput()
         elif userInput == 2:
@@ -21,7 +25,65 @@ def menu():
             print("")
 
 def printAuctionResults():
-    pass
+    bids = fileRead("bids.json")
+    auctionDetails = fileRead("auctions.json")
+    print("\nSELECTED: AUCTION RESULTS")
+    if bids == False or auctionDetails == False:
+        print("BIDS or AUCTION FILE DOES NOT EXIST, CREATE ONE BY COMMENCING AN AUCTION OR INPUTTING DATA.")
+    else:
+        auctionHighestValueDict = {}
+        auctionBidsCastCount = {}
+        auctionOutputFile = {}
+        auctionSuccess = 0
+        for auction in auctionDetails.keys():
+            auctionHighestValueDict[auction] = f"NO-ONE:{auctionDetails[auction]['reserve'] - 0.01}"
+            auctionBidsCastCount[auction] = 0
+        for bidNum in bids.keys():
+            xData = bids[bidNum].split(":")
+            highestValue = auctionHighestValueDict[xData[0]].split(':')
+            if float(xData[1]) > float(highestValue[1]):
+                auctionHighestValueDict[xData[0]] = f"{bidNum}:{xData[1]}"
+            auctionBidsCastCount[xData[0]] = auctionBidsCastCount[xData[0]] + 1
+        for auction in auctionHighestValueDict.keys():
+            print(f"\nAUCTION RESULTS FOR AUCTION {auction}:")
+            if float(highestValue[1]) == float(auctionDetails[auction]['reserve'] - 0.01) or auctionBidsCastCount[auction] == 0:
+                print(f"The work '{auctionDetails[auction]['description']}' by '{auctionDetails[auction]['name']}' is being bid on.")
+                print(f"The reserve for this product was ${auctionDetails[auction]['reserve']}.")
+                print(f"There were no valid bids cast for this product.")
+                print(f"The winner of this auction was no one, the reserve was not met.")
+                dictionary = {}
+                dictionary['Artist'] = auctionDetails[auction]['name']
+                dictionary['Description'] = auctionDetails[auction]['description']
+                dictionary['Reserve Price'] = auctionDetails[auction]['reserve']
+                dictionary['Bids Cast'] = 0
+                dictionary['Winner'] = "no one"
+                dictionary['Winning Bid Value'] = 0
+                dictionary['Commision'] = 0
+                dictionary['Total Payable'] = 0
+                dictionary['Sold'] = False
+                auctionOutputFile[f"Auction {auction}"] = dictionary
+            else:
+                xData = auctionHighestValueDict[auction].split(":")
+                print(f"The work '{auctionDetails[auction]['description']}' by '{auctionDetails[auction]['name']}' is being bid on.")
+                print(f"The reserve for this product was ${auctionDetails[auction]['reserve']}.")
+                print(f"There were {auctionBidsCastCount[auction]} valid bids cast for this product.")
+                print(f"The winner of this auction was bid number {xData[0]}, with the their bid of ${xData[1]}.")
+                commision = float(xData[1]) * 0.1
+                print(f"The total price payable is ${round(commision + float(xData[1]),2)} with a ${round(commision,2)} (10%) commision added.")
+                dictionary = {}
+                dictionary['Artist'] = auctionDetails[auction]['name']
+                dictionary['Description'] = auctionDetails[auction]['description']
+                dictionary['Reserve Price'] = auctionDetails[auction]['reserve']
+                dictionary['Bids Cast'] = auctionBidsCastCount[auction]
+                dictionary['Winner'] = f"Bid Number: {xData[0]}"
+                dictionary['Winning Bid Value'] = xData[1]
+                dictionary['Commision'] = round(commision,2)
+                dictionary['Total Payable'] = round(commision + float(xData[1]),2)
+                dictionary['Sold'] = True
+                auctionOutputFile[f"Auction {auction}"] = dictionary
+                auctionSuccess = auctionSuccess + 1
+        print("\nSaving Auction Results to auctionResults.json")
+        fileSave(auctionOutputFile,"auctionResults.json")
 
 def startAuction():
     auctionDetails = fileRead("auctions.json")
@@ -37,10 +99,10 @@ def enterBids(auctionDetails:dict):
     condition = True
     invalidBids = 0
     underReserveBids = 0
-    bids = []
+    bids = {}
     while condition == True:
         print("BID IDENTITY SEPARATOR ---")
-        bidCode = input("Input the bid number for the bid: ")
+        bidCode = input("Input the bid product number for the bid: ")
         if bidCode.isdigit() != True:
             invalidBids = invalidBids + 1
             print("INVALID BID, PROCEEDING TO NEXT BID")
@@ -51,20 +113,24 @@ def enterBids(auctionDetails:dict):
             if not validity:
                 invalidBids = invalidBids + 1
             else:
-                bidValue = float(input("Input the value of the bid: $"))
-                if bidValue.replace(".","",1).isdigit() != True:
-                    invalidBids = invalidBids + 1
+                bidNum = int(input("Input the bid number for the bidder: "))
+                if not bidNum:
                     print("INVALID BID, PROCEEDING TO NEXT BID")
                 else:
-                    if bidValue < auctionDetails[bidCode]["reserve"]:
+                    bidValue = float(input("Input the value of the bid: $"))
+                    if isFloat(bidValue) != True:
                         invalidBids = invalidBids + 1
-                        underReserveBids = underReserveBids + 1
-                        print("INVALID BID: BID UNDER RESERVE, PROCEEDING TO NEXT BID")
+                        print("INVALID BID, PROCEEDING TO NEXT BID")
                     else:
-                        append = f"{bidCode}:{bidValue}"
-                        bids.append(append)
-                        print("BID SUCCESSFULLY CAST")
-        selection = input("INPUTTING MORE BIDS? (ANYTHING FOR YES, n FOR NO)").lower()
+                        if bidValue < auctionDetails[bidCode]["reserve"]:
+                            invalidBids = invalidBids + 1
+                            underReserveBids = underReserveBids + 1
+                            print("INVALID BID: BID UNDER RESERVE, PROCEEDING TO NEXT BID")
+                        else:
+                            append = f"{bidCode}:{bidValue}"
+                            bids[bidNum] = append
+                            print("BID SUCCESSFULLY CAST")
+        selection = input("INPUTTING MORE BIDS? (ANYTHING FOR YES, n FOR NO) ").lower()
         if selection == "n":
             condition = False
         elif not selection:
@@ -157,6 +223,13 @@ def fileSave(data,location:str):
     file.write(dataJson)
     file.close()
     print(f"File saved successfully to {location}!")
+
+def isFloat(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
 
 def fileRead(location:str):
     if os.path.exists(location):
