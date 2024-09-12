@@ -9,14 +9,14 @@ def menu():
     while cond == True:
         print("\nBus Investigation Application - v1")
         print("What would you like to do?")
-        userInput = input("Type 1 to input data, Type 2 to search the data, Type 3 to read and print the data statistics, Type e to exit: \n").lower()
-        if userInput == "1":
+        userInput = int(input("Type 1 to input data, Type 2 to search the data, Type 3 to read and print the data statistics, Type 9 to exit: \n"))
+        if userInput == 1:
             inputData()
-        elif userInput == "2":
+        elif userInput == 2:
             searchData()
-        elif userInput == "3":
+        elif userInput == 3:
             readData()
-        elif userInput == "e":
+        elif userInput == 9:
             cond = False
         else:
             print("INVALID INPUT, TRY AGAIN \n")

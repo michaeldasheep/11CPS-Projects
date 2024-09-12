@@ -162,3 +162,7 @@ cython_debug/
 #.idea/
 data.json
 statistics.json
+.vscode
+bids.json
+auctionResults.json
+auctions.json
