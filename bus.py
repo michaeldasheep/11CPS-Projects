@@ -70,7 +70,7 @@ def searchData():
             elif selection == 3:
                 condition2 = True
                 while condition2 == True:
-                    route = input("What route are you looking at? (q to exit) ").upper()
+                    route = input("What route are you looking at? (9 to exit) ").upper()
                     if route == buses[0] or route == buses[1] or route == buses[2] or route == buses[3] or route == buses[4] or route == buses[5]:
                         print(f"Printing Bus Punctuality Table for Route {route}:\n")
                         table = rich.table.Table(title=f"Bus Punctuality for Route {route}")
@@ -94,7 +94,7 @@ def searchData():
                                     noLate = noLate + 1
                                     print(f"Bus Route {route} on Week {week} on Day {day} was late by {data[f'{route}{week}{day}'] * -1} minutes.")
                         print(f"Number of times bus route {route} was late: {noLate}\n")
-                    elif route == "Q":
+                    elif route == "9":
                         condition2 = False
                     else:
                         print("We could not find your particular route in our system, please try again.")
@@ -131,7 +131,7 @@ def searchData():
             elif selection == 1:
                 condition2 = True
                 while condition2 == True:
-                    day = input("What day are you looking at? (q to exit) ").lower()
+                    day = input("What day are you looking at? (9 to exit) ").lower()
                     if day == days[0].lower() or day == days[1].lower() or day == days[2].lower() or day == days[3].lower() or day == days[4].lower():
                         print(f"Printing Bus Punctuality table for day {day.capitalize()}...\n")
                         table = rich.table.Table(title=f"Bus Punctuality for Day {day.capitalize()}")
@@ -154,7 +154,7 @@ def searchData():
                                     noLate = noLate + 1
                                     print(f"Bus Route {bus} on Week {week} on Day {day} was late by {data[f'{bus}{week}{day.capitalize()}'] * -1} minutes.")
                         print(f"Number of times bus was late on day {day} throughout all {len(weeks)} weeks: {noLate}\n")
-                    elif day == "q":
+                    elif day == "9":
                         condition2 = False
                     else:
                         print("We could not find your particular day in the system, please try again.")
@@ -223,7 +223,7 @@ def statBuses(busCode:str, data:dict):
 
 def inputData():
     print("\nDATA INPUT SECTION:")
-    selection = input('How would you like to input your data (either 1 for one by one or 2 for in batches) (default: 1): \n')
+    """selection = input('How would you like to input your data (anything for one by one or 2 for in batches) (default: 1): \n')
     if selection == "2":
         array = batchInputData()
         return array
@@ -240,7 +240,9 @@ def inputData():
                             condition = False
                         else:
                             print("Please input a valid number!")
-        inputWriteToFile(data,"data.json")
+        inputWriteToFile(data,"data.json")"""
+    array = batchInputData()
+    return array
 
 def batchInputData():
     data = {}

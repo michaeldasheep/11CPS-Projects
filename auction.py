@@ -73,10 +73,10 @@ def printAuctionResults():
                 dictionary = {}
                 dictionary['Artist'] = auctionDetails[auction]['name']
                 dictionary['Description'] = auctionDetails[auction]['description']
-                dictionary['Reserve Price'] = auctionDetails[auction]['reserve']
-                dictionary['Bids Cast'] = auctionBidsCastCount[auction]
+                dictionary['Reserve Price'] = float(auctionDetails[auction]['reserve'])
+                dictionary['Bids Cast'] = int(auctionBidsCastCount[auction])
                 dictionary['Winner'] = f"Bid Number: {xData[0]}"
-                dictionary['Winning Bid Value'] = xData[1]
+                dictionary['Winning Bid Value'] = float(xData[1])
                 dictionary['Commision'] = round(commision,2)
                 dictionary['Total Payable'] = round(commision + float(xData[1]),2)
                 dictionary['Sold'] = True
@@ -122,7 +122,7 @@ def enterBids(auctionDetails:dict):
                         invalidBids = invalidBids + 1
                         print("INVALID BID, PROCEEDING TO NEXT BID")
                     else:
-                        if bidValue < auctionDetails[bidCode]["reserve"]:
+                        if float(bidValue) < float(auctionDetails[bidCode]["reserve"]):
                             invalidBids = invalidBids + 1
                             underReserveBids = underReserveBids + 1
                             print("INVALID BID: BID UNDER RESERVE, PROCEEDING TO NEXT BID")
