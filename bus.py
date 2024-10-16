@@ -1,3 +1,4 @@
+# BEFORE EVERYTHING, PLEASE INSTALL ALL IN THE REQUIREMENTS.TXT FILE BY pip install -r requirements.txt INTO YOUR VENV, IT WILL NOT WORK IF NOT DONE.
 # Import JSON (storage), os.path (check for file), rich (for tables and prettifying)
 import json
 import os.path
