@@ -210,6 +210,7 @@ def readData():
             elif noLate == noLatest:
                 noLatestBus = f"{noLatestBus} and {bus}"
         print(f"\nThe bus that was late the most was Bus {noLatestBus} with it being late {noLatest} times throughout the 4 weeks.")
+        # Write the statistics dictionary to statistics.json
         inputWriteToFile(writeDictionary,"statistics.json")
     else:
         print("DATA.JSON NOT PRESENT OR CORRUPTED \n")
