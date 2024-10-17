@@ -313,7 +313,7 @@ def verifyDataArray(array:dict):
     else:
         # Computes if every data is a integer digit
         for i in array:
-            if i.isdigit() != True:
+            if i.lstrip("-").isdigit() != True:
                 return False
         return True
 
